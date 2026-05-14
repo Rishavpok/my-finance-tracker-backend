@@ -6,9 +6,10 @@ import { UsersModule } from './users/users.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { TransactionModule } from './transaction/transaction.module';
 import { JwtStrategy } from './auth/strategies/jwt.strategy';
+import { CategoryModule } from './category/category.module';
 
 @Module({
-  imports: [AuthModule, UsersModule, PrismaModule, TransactionModule],
+  imports: [AuthModule, UsersModule, PrismaModule, TransactionModule, CategoryModule],
   controllers: [AppController],
   providers: [AppService , JwtStrategy],
 })

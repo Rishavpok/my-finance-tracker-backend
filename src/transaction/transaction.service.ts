@@ -9,6 +9,27 @@ export class TransactionService {
     constructor(private prisma: PrismaService) {
     }
 
+    async getAllTransaction(userId: string) {
+
+        try {
+
+            const transactions = await this.prisma.transaction.findMany({
+                where: { userId }
+            })
+
+            return {
+                data: transactions
+            }
+
+        } catch (e) {
+            throw new HttpException(
+                'Failed to load transactions',
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+
+    }
+
 
     async createTransaction(userId: number, transaction: CreateTransactionDTO) {
         try {
@@ -34,7 +55,7 @@ export class TransactionService {
         }
     }
 
-    async updateTransaction(userId: number, transactionId: string, transaction: UpdateTransactionDto) {
+    async updateTransaction(transactionId: string, transaction: UpdateTransactionDto) {
 
         const exist = await this.prisma.transaction.findUnique({
             where: { id: transactionId }
