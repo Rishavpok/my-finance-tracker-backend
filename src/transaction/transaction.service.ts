@@ -31,13 +31,42 @@ export class TransactionService {
     }
 
 
+    async getTransactionById(id: string) {
+        const exist = await this.prisma.transaction.findFirst({
+            where: { id }
+        })
+
+        if (!exist) {
+            throw new HttpException(
+                'Transaction not found',
+                HttpStatus.BAD_REQUEST
+            )
+        }
+
+        try {
+            const transaction = await this.prisma.transaction.findFirst({
+                where: { id }
+            })
+
+            return {
+                transaction
+            }
+        } catch (e) {
+            throw new HttpException(
+                'Failed to load transactions',
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+
+
     async createTransaction(userId: number, transaction: CreateTransactionDTO) {
         try {
             const transac = await this.prisma.transaction.create({
                 data: {
                     ...transaction,
-                    amount : Number(transaction.amount),
-                    date : new Date(transaction.date),
+                    amount: Number(transaction.amount),
+                    date: new Date(transaction.date),
                     user: {
                         connect: { id: String(userId) },
                     },
@@ -73,7 +102,12 @@ export class TransactionService {
         try {
             const updatedTransaction = await this.prisma.transaction.update({
                 where: { id: transactionId },
-                data: transaction
+                data: {
+                    ...transaction,
+                    amount: Number(transaction.amount),
+                    date: transaction.date ? new Date(transaction.date) : undefined,
+
+                }
             })
 
             return {
@@ -82,6 +116,7 @@ export class TransactionService {
             }
 
         } catch (e) {
+            console.log(e)
             throw new HttpException(
                 'Failed to update transaction',
                 HttpStatus.INTERNAL_SERVER_ERROR,

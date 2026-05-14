@@ -13,8 +13,12 @@ export class TransactionController {
 
     @Get('all') 
     async getTransactions(@Req() req: any  ) {
-      
        return this.service.getAllTransaction(req.user.userId)
+    }
+
+    @Get(":id")
+    async getTransactionbyid(@Param('id') id : string ) {
+        return this.service.getTransactionById(id)
     }
 
     @Post('create')
