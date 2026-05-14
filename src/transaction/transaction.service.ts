@@ -36,6 +36,8 @@ export class TransactionService {
             const transac = await this.prisma.transaction.create({
                 data: {
                     ...transaction,
+                    amount : Number(transaction.amount),
+                    date : new Date(transaction.date),
                     user: {
                         connect: { id: String(userId) },
                     },

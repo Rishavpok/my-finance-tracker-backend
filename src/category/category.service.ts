@@ -9,6 +9,26 @@ export class CategoryService {
 
     }
 
+    async getCategories(userId: string) {
+        try {
+
+            const categories = await this.prisma.category.findMany({
+                where: { userId }
+            })
+
+            return {
+                data: categories
+            }
+
+
+        } catch (e) {
+            throw new HttpException(
+                'Something went wrong',
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+
 
     async createCategory(userId: string, category: CreateCategoryDto) {
 
@@ -19,7 +39,7 @@ export class CategoryService {
                     userId,
                     name: category.name,
                     icon: category.icon ?? '',
-                    budget: category.budget
+                    budget: category.budget ?? 0.00
                 }
             })
 
@@ -29,6 +49,7 @@ export class CategoryService {
             }
 
         } catch (e) {
+            console.log(e)
             throw new HttpException(
                 'Failed to add category',
                 HttpStatus.INTERNAL_SERVER_ERROR,

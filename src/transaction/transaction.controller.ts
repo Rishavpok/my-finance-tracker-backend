@@ -13,6 +13,7 @@ export class TransactionController {
 
     @Get('all') 
     async getTransactions(@Req() req: any  ) {
+      
        return this.service.getAllTransaction(req.user.userId)
     }
 
